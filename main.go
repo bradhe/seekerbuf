@@ -30,12 +30,12 @@ func (self *bufferImpl) Read(p []byte) (n int, err error) {
 
 	// if it's read past the end, we want n < len(p), otherwise n = len(p) as
 	// len(p) bytes were read.
-	if len64(self.data) < (self.offset + len64(p)) {
+	if len64(self.data) <= (self.offset + len64(p)) {
 		n = len(self.data) - int(self.offset)
 		self.offset = len64(self.data)
 	} else {
-		n = len(self.data)
-		self.offset = len64(p)
+		n = len(p)
+		self.offset += len64(p)
 	}
 
 	return
@@ -88,9 +88,20 @@ func (self *bufferImpl) Seek(offset int64, whence int) (int64, error) {
 	return self.offset, nil
 }
 
+// Simulates a sync operation against the buffer.
+func (self *bufferImpl) Sync() error {
+	return nil
+}
+
 // Allocates a new ReadWriteSeekerBuffer with the supplied capacity.
 func NewReadWriteSeekerBuffer(capacity int) io.ReadWriteSeeker {
 	buf := new(bufferImpl)
-	buf.data = make([]byte, capacity)
+	buf.data = make([]byte, 0, capacity)
+	return buf
+}
+
+func NewSynchronizedReadWriteSeekerBuffer(capacity int) SynchronizedReadWriteSeeker {
+	buf := new(bufferImpl)
+	buf.data = make([]byte, 0, capacity)
 	return buf
 }
