@@ -6,5 +6,6 @@ import (
 
 type SynchronizedReadWriteSeeker interface {
 	io.ReadWriteSeeker
+	io.Closer
 	Sync() error
 }
