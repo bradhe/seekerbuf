@@ -93,6 +93,10 @@ func (self *bufferImpl) Sync() error {
 	return nil
 }
 
+func (self *bufferImpl) Close() error {
+	return nil
+}
+
 // Allocates a new ReadWriteSeekerBuffer with the supplied capacity.
 func NewReadWriteSeekerBuffer(capacity int) io.ReadWriteSeeker {
 	buf := new(bufferImpl)
